@@ -19,7 +19,7 @@ namespace GridWarModel.Logic
         public void doAction(Game game)
         {
             this.game = game;
-            if (game.ActionCount == 0)
+            if (game.ActionCount == 0 || game.ActionCount == 1)
                 game.ActionCount++;
 
             Direction direction = chooseADirection();

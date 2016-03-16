@@ -33,19 +33,27 @@ namespace GridWarModel.Logic
         {
             Console.WriteLine("Welcome to Grid Wars. ^(- -)^ ");
             Console.WriteLine();
-            Console.WriteLine("Press P - Play, H - Help");
+            chooseWelcomeMenu();            
+        }
 
-            char inputChar = Console.ReadKey().KeyChar;
-            if (inputChar == 'P' || inputChar == 'p')
+        private void chooseWelcomeMenu()
+        {
+            Console.WriteLine("Press P - Play, H - Help, Q - Quit");
+            char inputChar = char.ToUpper(Console.ReadKey().KeyChar);
+            if (inputChar == 'P')
             {
                 setup();
                 play();
             }
-            else if (inputChar == 'H' || inputChar == 'h')
+            else if (inputChar == 'H')
             {
                 printHelp();
+                chooseWelcomeMenu();
+            } else if (inputChar == 'Q')
+            {
+                Console.WriteLine("\nQuiting...");
             }
-            Console.WriteLine();        
+            Console.WriteLine();
         }
 
         public List<Warrior> getWarriorsForAPlayer(PlayerType playerType)
@@ -55,8 +63,8 @@ namespace GridWarModel.Logic
 
         private void printHelp()
         {
-            Console.WriteLine(" ^( - - )^ Grid war is a turn based game");
-            Console.WriteLine(" The play menu will instruct you with easy. Nothing to see here. Go and Play. :) ");
+            Console.WriteLine("\n ^( - - )^ Grid war is a turn based game");
+            Console.WriteLine(" Game menu will instruct you all the options. Nothing to see here. Go and Play. :) \n");
         }
 
         private void switchTurn()
@@ -174,14 +182,18 @@ namespace GridWarModel.Logic
                 placePlayer(i);
                 switchTurn();
             }
-            Console.WriteLine("All warriors setup");
-
+            Console.WriteLine("\nAll warriors setup");            
+            //addWeapons();                  
+        } 
+        
+        private void addWeapons()
+        {
             Console.WriteLine("\nAdd Weapons");
             for (int i = 0; i < PLAYER_COUNT; i++)
             {
                 Console.WriteLine("\nTurn: " + Turn.ToString());
                 Warrior warrior1 = chooseAWarrior();
-                Weapon weapon = new Weapon(warrior1 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);                
+                Weapon weapon = new Weapon(warrior1 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
                 warrior1.addWeapon(weapon);
                 Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to " + warrior1.Name);
 
@@ -189,21 +201,22 @@ namespace GridWarModel.Logic
                 if (warrior1.GetType() == warrior2.GetType())
                 {
                     Console.WriteLine("Cannot add another weapon for " + warrior1.GetType());
-                } else
+                }
+                else
                 {
-                    weapon = new Weapon(warrior2 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);                    
+                    weapon = new Weapon(warrior2 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
                     warrior2.addWeapon(weapon);
                     Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to " + warrior2.Name);
                 }
                 switchTurn();
-            }                    
-        }        
+            }
+        }       
         
         private Warrior chooseAWarrior()
         {
             List<Warrior> warriors = getWarriorsForAPlayer(Turn);
             warriors.ForEach(w => Console.Write(w.Id + " : " + w.Name + " : " + w.GetType().Name + ", "));
-            Console.WriteLine("\nWarrior Id: ");
+            Console.Write("\nWarrior Id: ");
             int warriorId = readInputInt();
             return warriors.First(w => w.Id == warriorId);
         }
@@ -230,6 +243,8 @@ namespace GridWarModel.Logic
 
         private void play()
         {
+            Board.PrintBoard();
+            Console.WriteLine("\nTurn: " + Turn);            
             Console.WriteLine("\nChoose A warrior for play");
             Warrior warrior = chooseAWarrior();
 
@@ -248,7 +263,7 @@ namespace GridWarModel.Logic
             {
                 switchTurn();
                 play();
-            }   
+            }           
         }       
               
     }
