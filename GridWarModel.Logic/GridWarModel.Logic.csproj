@@ -41,11 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions\InformationAction.cs" />
+    <Compile Include="Actions\MoveAction.cs" />
     <Compile Include="Actions\SurrenderAction.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="MagicWarrior.cs" />
-    <Compile Include="Actions\PlayAction.cs" />
+    <Compile Include="Actions\IPlayAction.cs" />
     <Compile Include="Util\PlayerType.cs" />
     <Compile Include="Util\Direction.cs" />
     <Compile Include="MeleeWorrior.cs" />

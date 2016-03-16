@@ -69,8 +69,17 @@ namespace GridWarModel.Logic
             }
 
             // Clear previous position. Set new position
-            ROOMS[preWarriorX,preWarriorY] = 0;
-            ROOMS[warrior.Position.X,warrior.Position.Y] = 1;
+            if (ROOMS[warrior.Position.X, warrior.Position.Y] == 1)
+            {
+                Console.WriteLine("Cannot move to " + warrior.Position.X + ", " + warrior.Position.Y + ". A player exists.");
+                warrior.Position.X = preWarriorX;
+                warrior.Position.Y = preWarriorY;
+            } else
+            {
+                ROOMS[preWarriorX, preWarriorY] = 0;
+                ROOMS[warrior.Position.X, warrior.Position.Y] = 1;
+                Console.WriteLine("Player moved from " + preWarriorX + "," + preWarriorY + " to " + warrior.Position.X + ", " + warrior.Position.Y);
+            }
         }
 
         public static void PrintBoard()

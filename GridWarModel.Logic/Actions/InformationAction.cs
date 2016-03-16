@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GridWarModel.Logic
 {
-    public class InformationAction : PlayAction
+    public class InformationAction : IPlayAction
     {
         Warrior warrior;
 

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace GridWarModel.Logic
 {
-    public enum Direction
+    public interface IPlayAction
     {
-        EAST, WEST, NORTH, SOUTH, EAST_NORTH, WEST_NORTH, WEST_SOUTH, EAST_SOUTH, INVALID_DIRECTION
+        void doAction(Game game);
+        bool isDone();
     }
 }

@@ -12,6 +12,8 @@ namespace GridWarModel.Logic
         {
             get; set;
         }
+
+        public int ActionCount { get; set; }
                 
         public const int WARRIOR_SIZE = 6;
         public const int PLAYER_COUNT = 2;
@@ -23,7 +25,8 @@ namespace GridWarModel.Logic
         {
             int selectPlayer = Util.random.Next(0, 2);
             Turn = selectPlayer == 0 ? PlayerType.PLAYER_1 : PlayerType.PLAYER_2;
-            allWarriors = new List<Warrior>();            
+            allWarriors = new List<Warrior>();
+            ActionCount = 0;
         }      
 
         public void welcomeScreen()
@@ -66,6 +69,7 @@ namespace GridWarModel.Logic
             return this.Turn;
         }
 
+        /*
         private void placePlayer(int i)
         {
             Console.Write("\nTurn: " + Turn.ToString());
@@ -84,6 +88,27 @@ namespace GridWarModel.Logic
             warrior.Player = Turn;
             Board.ROOMS[warrior.Position.X,warrior.Position.Y] = 1;
             allWarriors.Add(warrior);
+        }
+        */
+        // Fake placePlayer
+        private void placePlayer(int i)
+        {
+            Console.Write("\nTurn: " + Turn.ToString());
+            Console.Write(", Warriror " + i);
+
+            int warriorChoice = Util.random.Next(0, 2);
+            char warriorType = warriorChoice == 0 ? 'M' : 'G';
+
+            Warrior warrior = createWarrior(warriorType);
+            warrior.Id = i;
+            warrior.Name = (int)Turn + "_" + i;
+
+            int row = Turn == PlayerType.PLAYER_1 ? 0 : 5;
+            int column = i;
+            warrior.Position = setupPostion(row, column);
+            warrior.Player = Turn;
+            Board.ROOMS[warrior.Position.X, warrior.Position.Y] = 1;
+            allWarriors.Add(warrior);            
         }
 
         private int readInputInt()
@@ -149,6 +174,8 @@ namespace GridWarModel.Logic
                 placePlayer(i);
                 switchTurn();
             }
+            Console.WriteLine("All warriors setup");
+
             Console.WriteLine("\nAdd Weapons");
             for (int i = 0; i < PLAYER_COUNT; i++)
             {
@@ -175,7 +202,7 @@ namespace GridWarModel.Logic
         private Warrior chooseAWarrior()
         {
             List<Warrior> warriors = getWarriorsForAPlayer(Turn);
-            warriors.ForEach(w => Console.Write(w.Id + " : " + w.Name + ", "));
+            warriors.ForEach(w => Console.Write(w.Id + " : " + w.Name + " : " + w.GetType().Name + ", "));
             Console.WriteLine("\nWarrior Id: ");
             int warriorId = readInputInt();
             return warriors.First(w => w.Id == warriorId);
@@ -183,16 +210,18 @@ namespace GridWarModel.Logic
 
         private void displayPlayOptions()
         {
-            Console.WriteLine("Choose Options: I=Statistics Information, M=Move, A=Attack, S=Surrender");
+            Console.WriteLine("\nChoose Options: I=Statistics Information, M=Move, A=Attack, S=Surrender");
         }
         
-        private PlayAction choosePlayAction(Warrior warrior)
+        private IPlayAction choosePlayAction(Warrior warrior)
         {
-            PlayAction action;
+            IPlayAction action;
             char playOption = char.ToUpper(Console.ReadKey().KeyChar);
 
             if (playOption == 'S')
                 action = new SurrenderAction(warrior);
+            if (playOption == 'M')
+                action = new MoveAction(warrior);
             else
                 action = new InformationAction(warrior);
 
@@ -201,13 +230,14 @@ namespace GridWarModel.Logic
 
         private void play()
         {
+            Console.WriteLine("\nChoose A warrior for play");
             Warrior warrior = chooseAWarrior();
 
             while(true)  // Turn Loop
             {
                 displayPlayOptions();               
                 
-                PlayAction action = choosePlayAction(warrior);
+                IPlayAction action = choosePlayAction(warrior);
                 action.doAction(this);
 
                 if (action.isDone())
