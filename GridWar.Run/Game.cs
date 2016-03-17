@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GridWarModel.Logic
 {
     /**
-     * Game class takes user input, displays information and initializes and plays the game
+     * Game class takes user input, displays information and initializes the warriors and plays the game
      */
     public class Game
     {
@@ -51,9 +51,7 @@ namespace GridWarModel.Logic
         {
             Console.WriteLine("\n ^( - - )^ Grid war is a turn based game");
             Console.WriteLine(" Game menu will instruct you all the options. Nothing to see here. Go and Play. :) \n");
-        }
-
-        
+        }                
 
         /*
         private void placePlayer(int i)
@@ -76,7 +74,8 @@ namespace GridWarModel.Logic
             allWarriors.Add(warrior);
         }
         */
-        // Fake placePlayer
+
+        // Fake placePlayer. Comment this and uncommet above to get user input
         private void placePlayer(int i)
         {
             Console.Write("\nTurn: " + Status.Turn.ToString());
@@ -191,7 +190,7 @@ namespace GridWarModel.Logic
             IPlayAction action;
             char playOption = char.ToUpper(Console.ReadKey().KeyChar);
 
-            Status.ActionDirection = (playOption == 'M' || playOption == 'A') ? Board.chooseADirection() : Direction.INVALID_DIRECTION;
+            Status.ActionDirection = (playOption == 'M' || playOption == 'A') ? chooseADirection() : Direction.INVALID_DIRECTION;
 
             if (playOption == 'S')
                 action = new SurrenderAction(warrior);
@@ -207,7 +206,7 @@ namespace GridWarModel.Logic
 
         private void play()
         {
-            Board.PrintBoard();
+            PrintBoard();
             Console.WriteLine("\nTurn: " + Status.Turn);            
             Console.WriteLine("\nChoose A warrior for play");
             Warrior warrior = chooseAWarrior();
@@ -228,7 +227,48 @@ namespace GridWarModel.Logic
                 GameUtil.switchTurn();
                 play();
             }           
-        }       
-              
+        }
+
+        public Direction chooseADirection()
+        {
+            Console.WriteLine("\nDirection: E:EAST, W:WEST, N:NORTH, S:SOUTH, A:EAST_NORTH, B:EAST_SOUTH, C:WEST_SOUTH, D:WEST_NORTH");
+            char inputChar = char.ToUpper(Console.ReadKey().KeyChar);
+
+            if (inputChar == 'E')
+                return Direction.EAST;
+            else if (inputChar == 'W')
+                return Direction.WEST;
+            else if (inputChar == 'N')
+                return Direction.NORTH;
+            else if (inputChar == 'S')
+                return Direction.SOUTH;
+            else if (inputChar == 'A')
+                return Direction.EAST_NORTH;
+            else if (inputChar == 'B')
+                return Direction.EAST_SOUTH;
+            else if (inputChar == 'C')
+                return Direction.WEST_SOUTH;
+            else if (inputChar == 'D')
+                return Direction.WEST_NORTH;
+            else
+            {
+                Console.WriteLine("Did not select a proper direction. You miss.");
+                return Direction.INVALID_DIRECTION;
+            }
+        }
+
+        public void PrintBoard()
+        {
+            Console.WriteLine("\nBoard\n");
+            for (int i = 0; i < Board.BOARD_SIZE; i++)
+            {
+                for (int j = 0; j < Board.BOARD_SIZE; j++)
+                {
+                    Console.Write(" | " + Board.ROOMS[i, j] + " | ");
+                }
+                Console.WriteLine();
+            }
+        }
+
     }
 }

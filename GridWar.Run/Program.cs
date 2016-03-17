@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace GridWar.Run
 {
-    public class Execute
+    public class Program
     {
         public static void Main()
-        {
-            int selectPlayer = Util.random.Next(0, 2);
+        {            
             Game game = new Game();
             game.welcomeScreen();            
             Console.ReadKey();
