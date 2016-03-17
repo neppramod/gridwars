@@ -17,7 +17,7 @@ namespace GridWarModel.Logic
 
         public void doAction(Game game)
         {
-            Console.WriteLine("You lose! Better luck next time.");
+            Console.WriteLine("\n" + warrior.Player.ToString() + " looses!!. Better luck next time.");
             game.Exit = true;
         }
 
