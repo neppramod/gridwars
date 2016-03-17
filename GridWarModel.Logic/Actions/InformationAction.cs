@@ -18,7 +18,7 @@ namespace GridWarModel.Logic
         public void doAction(Game game)
         {
             Console.WriteLine("Statistics");
-            Console.WriteLine("Selected warrior: " + warrior.Id + ": " + warrior.Name);
+            Console.WriteLine("Selected warrior: " + warrior.Id);
             List<Warrior> warriors = game.getWarriorsForAPlayer(warrior.Player);
             var totalHitPoints = warriors.Sum(w => w.HitPoints);
             Console.WriteLine("Total hit points: " + totalHitPoints);

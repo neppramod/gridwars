@@ -21,9 +21,7 @@ namespace GridWarModel.Logic
         public int MagicPower { get; set;}
         public int DefensePercentage { get; protected set;}
 
-        public  int Id { get; set; }
-
-        public string Name { get; set; }
+        public  int Id { get; set; }        
 
         public PlayerType Player { get; set; }
 

@@ -83,6 +83,34 @@ namespace GridWarModel.Logic
             }
         }
 
+        public static Direction chooseADirection()
+        {
+            Console.WriteLine("\nDirection: E:EAST, W:WEST, N:NORTH, S:SOUTH, A:EAST_NORTH, B:EAST_SOUTH, C:WEST_SOUTH, D:WEST_NORTH");
+            char inputChar = char.ToUpper(Console.ReadKey().KeyChar);
+
+            if (inputChar == 'E')
+                return Direction.EAST;
+            else if (inputChar == 'W')
+                return Direction.WEST;
+            else if (inputChar == 'N')
+                return Direction.NORTH;
+            else if (inputChar == 'S')
+                return Direction.SOUTH;
+            else if (inputChar == 'A')
+                return Direction.EAST_NORTH;
+            else if (inputChar == 'B')
+                return Direction.EAST_SOUTH;
+            else if (inputChar == 'C')
+                return Direction.WEST_SOUTH;
+            else if (inputChar == 'D')
+                return Direction.WEST_NORTH;
+            else
+            {
+                Console.WriteLine("Did not select a proper direction. You miss.");
+                return Direction.INVALID_DIRECTION;
+            }
+        }
+
         public static void PrintBoard()
         {
             Console.WriteLine("\nBoard\n");

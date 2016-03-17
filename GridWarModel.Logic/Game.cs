@@ -108,8 +108,7 @@ namespace GridWarModel.Logic
             char warriorType = warriorChoice == 0 ? 'M' : 'G';
 
             Warrior warrior = createWarrior(warriorType);
-            warrior.Id = i;
-            warrior.Name = (int)Turn + "_" + i;
+            warrior.Id = i;            
 
             int row = Turn == PlayerType.PLAYER_1 ? 0 : 5;
             int column = i;
@@ -195,7 +194,7 @@ namespace GridWarModel.Logic
                 Warrior warrior1 = chooseAWarrior();
                 Weapon weapon = new Weapon(warrior1 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
                 warrior1.addWeapon(weapon);
-                Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to " + warrior1.Name);
+                Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to warrior " + warrior1.Id);
 
                 Warrior warrior2 = chooseAWarrior();
                 if (warrior1.GetType() == warrior2.GetType())
@@ -206,7 +205,7 @@ namespace GridWarModel.Logic
                 {
                     weapon = new Weapon(warrior2 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
                     warrior2.addWeapon(weapon);
-                    Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to " + warrior2.Name);
+                    Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to warrior " + warrior2.Id);
                 }
                 switchTurn();
             }
@@ -215,7 +214,7 @@ namespace GridWarModel.Logic
         private Warrior chooseAWarrior()
         {
             List<Warrior> warriors = getWarriorsForAPlayer(Turn);
-            warriors.ForEach(w => Console.Write(w.Id + " : " + w.Name + " : " + w.GetType().Name + ", "));
+            warriors.ForEach(w => Console.Write(w.Id + " : " + w.GetType().Name + ", "));
             Console.Write("\nWarrior Id: ");
             int warriorId = readInputInt();
             return warriors.First(w => w.Id == warriorId);
@@ -233,8 +232,10 @@ namespace GridWarModel.Logic
 
             if (playOption == 'S')
                 action = new SurrenderAction(warrior);
-            if (playOption == 'M')
+            else if (playOption == 'M')
                 action = new MoveAction(warrior);
+            else if (playOption == 'A')
+                action = new AttackAction(warrior);
             else
                 action = new InformationAction(warrior);
 

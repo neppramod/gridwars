@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace GridWarModel.Logic
 {
-    public class MoveAction : IPlayAction
+    public class AttackAction : IPlayAction
     {
         Warrior warrior;
         Game game;
 
-        public MoveAction(Warrior warrior)
+        public AttackAction(Warrior warrior)
         {
             this.warrior = warrior;
         }
@@ -24,29 +24,26 @@ namespace GridWarModel.Logic
 
             Direction direction = Board.chooseADirection();
             if (direction != Direction.INVALID_DIRECTION)
-            {
-                try
-                {
-                    this.warrior.Move(direction);
-                } catch(InvalidOperationException)
-                {
-                    Console.WriteLine("\nCould not move the player to " + direction.ToString() + ", you miss a chance");
-                }
-            }                     
+            {                
+                 attack(direction);                
+            } 
+        }
+
+        private void attack(Direction direction)
+        {
+            Console.WriteLine("\nWarrior " + this.warrior.Id + " is attacking in " + direction.ToString());
         }
 
         public bool isDone()
         {
-            if ( game.ActionCount == 2)
+            if (game.ActionCount == 2)
             {
-                game.ActionCount = 0; // reset count
+                game.ActionCount = 0; //reset count
                 return true;
-            }
-            else
+            } else
             {
                 return false;
             }
-            
         }
     }
 }
