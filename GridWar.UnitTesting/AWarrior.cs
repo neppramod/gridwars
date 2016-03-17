@@ -89,5 +89,16 @@ namespace GridWar.UnitTesting
             sut.addWeapon(new Weapon(WeaponType.Staff));
             Assert.That(sut.hasWeapon(), Is.EqualTo(true));
         }
+
+        [Test]
+        public void ShouldBeAbleToDropWeaon()
+        {
+            var sut = new MeleeWorrior();
+
+            sut.addWeapon(new Weapon(WeaponType.Sword));
+            Assert.That(sut.hasWeapon(), Is.EqualTo(true));
+            sut.dropWeapon();
+            Assert.That(sut.hasWeapon(), Is.EqualTo(false));
+        }
     }
 }
