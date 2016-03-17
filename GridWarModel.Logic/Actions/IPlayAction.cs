@@ -8,7 +8,7 @@ namespace GridWarModel.Logic
 {
     public interface IPlayAction
     {
-        void doAction(Game game);
+        void doAction();
         bool isDone();
     }
 }

@@ -15,10 +15,10 @@ namespace GridWarModel.Logic
             this.warrior = warrior;
         }
 
-        public void doAction(Game game)
+        public void doAction()
         {
             Console.WriteLine("\n" + warrior.Player.ToString() + " looses!!. Better luck next time.");
-            game.Exit = true;
+            Status.Exit = true;
         }
 
         public bool isDone()

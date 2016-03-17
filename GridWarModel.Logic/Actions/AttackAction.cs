@@ -8,37 +8,34 @@ namespace GridWarModel.Logic
 {
     public class AttackAction : IPlayAction
     {
-        Warrior warrior;
-        Game game;
+        Warrior warrior;        
 
         public AttackAction(Warrior warrior)
         {
             this.warrior = warrior;
         }
 
-        public void doAction(Game game)
-        {
-            this.game = game;
-            if (game.ActionCount == 0 || game.ActionCount == 1)
-                game.ActionCount++;
-
-            Direction direction = Board.chooseADirection();
-            if (direction != Direction.INVALID_DIRECTION)
+        public void doAction()
+        {            
+            if (Status.ActionCount == 0 || Status.ActionCount == 1)
+                Status.ActionCount++;
+            
+            if (Status.ActionDirection != Direction.INVALID_DIRECTION)
             {                
-                 attack(direction);                
+                 attack();                
             } 
         }
 
-        private void attack(Direction direction)
+        private void attack()
         {
-            Console.WriteLine("\nWarrior " + this.warrior.Id + " is attacking in " + direction.ToString());
+            Console.WriteLine("\nWarrior " + this.warrior.Id + " is attacking in " + Status.ActionDirection.ToString());
         }
 
         public bool isDone()
         {
-            if (game.ActionCount == 2)
+            if (Status.ActionCount == 2)
             {
-                game.ActionCount = 0; //reset count
+                Status.ActionCount = 0; //reset count
                 return true;
             } else
             {

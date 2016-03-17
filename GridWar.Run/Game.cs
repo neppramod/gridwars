@@ -6,27 +6,17 @@ using System.Threading.Tasks;
 
 namespace GridWarModel.Logic
 {
+    /**
+     * Game class takes user input, displays information and initializes and plays the game
+     */
     public class Game
     {
-        PlayerType Turn
-        {
-            get; set;
-        }
-
-        public int ActionCount { get; set; }
-                
-        public const int WARRIOR_SIZE = 6;
-        public const int PLAYER_COUNT = 2;
-        List<Warrior> allWarriors;
-        public bool Exit { set; get; }
-        
-
         public Game()
         {
             int selectPlayer = Util.random.Next(0, 2);
-            Turn = selectPlayer == 0 ? PlayerType.PLAYER_1 : PlayerType.PLAYER_2;
-            allWarriors = new List<Warrior>();
-            ActionCount = 0;
+            Status.Turn = selectPlayer == 0 ? PlayerType.PLAYER_1 : PlayerType.PLAYER_2;
+            
+            Status.ActionCount = 0;            
         }      
 
         public void welcomeScreen()
@@ -55,11 +45,7 @@ namespace GridWarModel.Logic
             }
             Console.WriteLine();
         }
-
-        public List<Warrior> getWarriorsForAPlayer(PlayerType playerType)
-        {
-            return allWarriors.FindAll(w => w.Player == playerType);
-        }
+              
 
         private void printHelp()
         {
@@ -67,15 +53,7 @@ namespace GridWarModel.Logic
             Console.WriteLine(" Game menu will instruct you all the options. Nothing to see here. Go and Play. :) \n");
         }
 
-        private void switchTurn()
-        {
-            this.Turn = this.Turn == PlayerType.PLAYER_1 ? PlayerType.PLAYER_2 : PlayerType.PLAYER_1;
-        }
-
-        private PlayerType getTurn()
-        {
-            return this.Turn;
-        }
+        
 
         /*
         private void placePlayer(int i)
@@ -101,21 +79,21 @@ namespace GridWarModel.Logic
         // Fake placePlayer
         private void placePlayer(int i)
         {
-            Console.Write("\nTurn: " + Turn.ToString());
+            Console.Write("\nTurn: " + Status.Turn.ToString());
             Console.Write(", Warriror " + i);
 
             int warriorChoice = Util.random.Next(0, 2);
             char warriorType = warriorChoice == 0 ? 'M' : 'G';
 
-            Warrior warrior = createWarrior(warriorType);
+            Warrior warrior = GameUtil.createWarrior(warriorType);
             warrior.Id = i;            
 
-            int row = Turn == PlayerType.PLAYER_1 ? 0 : 5;
+            int row = Status.Turn == PlayerType.PLAYER_1 ? 0 : 5;
             int column = i;
             warrior.Position = setupPostion(row, column);
-            warrior.Player = Turn;
+            warrior.Player = Status.Turn;
             Board.ROOMS[warrior.Position.X, warrior.Position.Y] = 1;
-            allWarriors.Add(warrior);            
+            GameUtil.allWarriors.Add(warrior);            
         }
 
         private int readInputInt()
@@ -137,7 +115,7 @@ namespace GridWarModel.Logic
         {
             Position position = new Position { X = row, Y = column };
 
-            if(positionIsOccupied(position))
+            if(GameUtil.isPositionOccupied(position))
             {
                 Console.Write("\nPosition: " + row + ", " + column + " is occupied. Please select new position");
                 Console.Write(", Position <ROW><COL>: ");
@@ -149,23 +127,6 @@ namespace GridWarModel.Logic
             return position;
         }
 
-        private bool positionIsOccupied(Position position)
-        {
-            return Board.ROOMS[position.X,position.Y] == 1;
-        }
-
-        private Warrior createWarrior(char warriorType)
-        {
-            Warrior warrior;
-
-            if (char.ToUpper(warriorType) == 'M')
-                warrior = new MeleeWorrior();
-            else
-                warrior = new MagicWorrior();
-
-            return warrior;
-        }
-
         private void setup()
         {
             Console.WriteLine("\nReady to play");
@@ -174,12 +135,12 @@ namespace GridWarModel.Logic
             Console.WriteLine("Player 1's range is first two rows [0-1][0-5])");
             Console.WriteLine("Player 2's range is last two rows [4,5][0-5]");            
 
-            for (int i = 0; i < WARRIOR_SIZE; i++)
+            for (int i = 0; i < GameUtil.WARRIOR_SIZE; i++)
             {
                 placePlayer(i);
-                switchTurn();
+                GameUtil.switchTurn();
                 placePlayer(i);
-                switchTurn();
+                GameUtil.switchTurn();
             }
             Console.WriteLine("\nAll warriors setup");            
             //addWeapons();                  
@@ -188,9 +149,9 @@ namespace GridWarModel.Logic
         private void addWeapons()
         {
             Console.WriteLine("\nAdd Weapons");
-            for (int i = 0; i < PLAYER_COUNT; i++)
+            for (int i = 0; i < GameUtil.PLAYER_COUNT; i++)
             {
-                Console.WriteLine("\nTurn: " + Turn.ToString());
+                Console.WriteLine("\nTurn: " + Status.Turn.ToString());
                 Warrior warrior1 = chooseAWarrior();
                 Weapon weapon = new Weapon(warrior1 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
                 warrior1.addWeapon(weapon);
@@ -207,13 +168,13 @@ namespace GridWarModel.Logic
                     warrior2.addWeapon(weapon);
                     Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to warrior " + warrior2.Id);
                 }
-                switchTurn();
+                GameUtil.switchTurn();
             }
         }       
         
         private Warrior chooseAWarrior()
         {
-            List<Warrior> warriors = getWarriorsForAPlayer(Turn);
+            List<Warrior> warriors = GameUtil.getWarriorsForAPlayer(Status.Turn);
             warriors.ForEach(w => Console.Write(w.Id + " : " + w.GetType().Name + ", "));
             Console.Write("\nWarrior Id: ");
             int warriorId = readInputInt();
@@ -230,6 +191,8 @@ namespace GridWarModel.Logic
             IPlayAction action;
             char playOption = char.ToUpper(Console.ReadKey().KeyChar);
 
+            Status.ActionDirection = (playOption == 'M' || playOption == 'A') ? Board.chooseADirection() : Direction.INVALID_DIRECTION;
+
             if (playOption == 'S')
                 action = new SurrenderAction(warrior);
             else if (playOption == 'M')
@@ -245,7 +208,7 @@ namespace GridWarModel.Logic
         private void play()
         {
             Board.PrintBoard();
-            Console.WriteLine("\nTurn: " + Turn);            
+            Console.WriteLine("\nTurn: " + Status.Turn);            
             Console.WriteLine("\nChoose A warrior for play");
             Warrior warrior = chooseAWarrior();
 
@@ -254,15 +217,15 @@ namespace GridWarModel.Logic
                 displayPlayOptions();               
                 
                 IPlayAction action = choosePlayAction(warrior);
-                action.doAction(this);
+                action.doAction();
 
                 if (action.isDone())
                     break;                
             }            
 
-            if (!Exit)
+            if (!Status.Exit)
             {
-                switchTurn();
+                GameUtil.switchTurn();
                 play();
             }           
         }       

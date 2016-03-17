@@ -21,23 +21,24 @@ namespace GridWar.UnitTesting
             int prePositionY = sut.Position.Y;
 
             sut.Move(Direction.EAST); 
-            Assert.That(sut.Position.X, Is.EqualTo(prePositionX + 1));
+            Assert.That(sut.Position.Y, Is.EqualTo(prePositionY + 1));
 
             sut.Move(Direction.SOUTH);
-            Assert.That(sut.Position.Y, Is.EqualTo(prePositionY + 1));
+            Assert.That(sut.Position.X, Is.EqualTo(prePositionX + 1));
 
             prePositionX = sut.Position.X;
             prePositionY = sut.Position.Y;
             sut.Move(Direction.EAST_SOUTH);
-            Assert.That(sut.Position.X, Is.EqualTo(prePositionX + 1));
             Assert.That(sut.Position.Y, Is.EqualTo(prePositionY + 1));
+            Assert.That(sut.Position.X, Is.EqualTo(prePositionX + 1));            
 
             prePositionX = sut.Position.X;
             prePositionY = sut.Position.Y;
             sut.Move(Direction.NORTH);
             sut.Move(Direction.EAST_NORTH);
-            Assert.That(sut.Position.X, Is.EqualTo(prePositionX + 1));
-            Assert.That(sut.Position.Y, Is.EqualTo(prePositionY - 2));
+            Assert.That(sut.Position.X, Is.EqualTo(prePositionX - 2));
+            Assert.That(sut.Position.Y, Is.EqualTo(prePositionY + 1));
+            
         }
 
         [Test]
@@ -48,8 +49,7 @@ namespace GridWar.UnitTesting
             // Top left
             sut.Position = new Position { X = 0, Y = 0 };
             Assert.That(() => sut.Move(Direction.WEST), Throws.TypeOf<InvalidOperationException>());
-            Assert.That(() => sut.Move(Direction.NORTH), Throws.TypeOf<InvalidOperationException>());
-            Assert.That(() => sut.Move(Direction.NORTH), Throws.TypeOf<InvalidOperationException>());
+            Assert.That(() => sut.Move(Direction.NORTH), Throws.TypeOf<InvalidOperationException>());            
             Assert.That(() => sut.Move(Direction.EAST_NORTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.WEST_SOUTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.WEST_NORTH), Throws.TypeOf<InvalidOperationException>());
@@ -61,22 +61,33 @@ namespace GridWar.UnitTesting
             Assert.That(() => sut.Move(Direction.EAST_SOUTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.WEST_SOUTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.EAST_NORTH), Throws.TypeOf<InvalidOperationException>());
-
+            
             // Top right
-            sut.Position = new Position { X = Board.BOARD_SIZE - 1, Y = 0 };
+            sut.Position = new Position { X = 0, Y = Board.BOARD_SIZE - 1 };
             Assert.That(() => sut.Move(Direction.EAST), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.NORTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.EAST_SOUTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.WEST_NORTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.EAST_NORTH), Throws.TypeOf<InvalidOperationException>());
-
+                        
             // Bottom left
-            sut.Position = new Position { X = 0, Y = Board.BOARD_SIZE - 1 };
+            sut.Position = new Position { X = Board.BOARD_SIZE - 1, Y = 0 };
             Assert.That(() => sut.Move(Direction.WEST), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.SOUTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.EAST_SOUTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.WEST_NORTH), Throws.TypeOf<InvalidOperationException>());
             Assert.That(() => sut.Move(Direction.WEST_SOUTH), Throws.TypeOf<InvalidOperationException>());
+            
+        }
+
+        [Test]
+        public void ShouldBeAbleToAddAWeaon()
+        {
+            var sut = new MagicWorrior();
+
+            Assert.That(sut.hasWeapon(), Is.EqualTo(false));
+            sut.addWeapon(new Weapon(WeaponType.Staff));
+            Assert.That(sut.hasWeapon(), Is.EqualTo(true));
         }
     }
 }
