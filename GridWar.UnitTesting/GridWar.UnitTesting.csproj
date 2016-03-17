@@ -44,7 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AMagicWarrior.cs" />
+    <Compile Include="AMeleeWarrior.cs" />
     <Compile Include="AWarrior.cs" />
+    <Compile Include="AWeapon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

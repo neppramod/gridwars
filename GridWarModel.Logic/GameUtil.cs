@@ -32,9 +32,9 @@ namespace GridWarModel.Logic
             Warrior warrior;
 
             if (char.ToUpper(warriorType) == 'M')
-                warrior = new MeleeWorrior();
+                warrior = new MeleeWarrior();
             else
-                warrior = new MagicWorrior();
+                warrior = new MagicWarrior();
 
             return warrior;
         }

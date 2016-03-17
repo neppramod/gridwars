@@ -14,7 +14,7 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldMoveAWarriorInADirection()
         {
-            var sut = new MeleeWorrior();
+            var sut = new MeleeWarrior();
 
             sut.Position = new Position { X = 0, Y = 0 };
             int prePositionX = sut.Position.X;
@@ -37,14 +37,13 @@ namespace GridWar.UnitTesting
             sut.Move(Direction.NORTH);
             sut.Move(Direction.EAST_NORTH);
             Assert.That(sut.Position.X, Is.EqualTo(prePositionX - 2));
-            Assert.That(sut.Position.Y, Is.EqualTo(prePositionY + 1));
-            
+            Assert.That(sut.Position.Y, Is.EqualTo(prePositionY + 1));            
         }
 
         [Test]
         public void ShouldNotBeAbleToMoveAWarriorPastABoundary()
         {
-            var sut = new MeleeWorrior();
+            var sut = new MeleeWarrior();
 
             // Top left
             sut.Position = new Position { X = 0, Y = 0 };
@@ -83,7 +82,7 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldBeAbleToAddAWeaon()
         {
-            var sut = new MagicWorrior();
+            var sut = new MagicWarrior();
 
             Assert.That(sut.hasWeapon(), Is.EqualTo(false));
             sut.addWeapon(new Weapon(WeaponType.Staff));
@@ -93,12 +92,48 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldBeAbleToDropWeaon()
         {
-            var sut = new MeleeWorrior();
+            var sut = new MeleeWarrior();
 
             sut.addWeapon(new Weapon(WeaponType.Sword));
             Assert.That(sut.hasWeapon(), Is.EqualTo(true));
             sut.dropWeapon();
             Assert.That(sut.hasWeapon(), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void ShouldHaveHitPointsOfHundredWhenCreated()
+        {
+            var sut = new MagicWarrior();
+            Assert.That(sut.HitPoints, Is.EqualTo(100));
+        }
+
+        [Test]
+        public void ShouldHaveDefensePercentageOfZeroWhenCreated()
+        {
+            var sut = new MeleeWarrior();
+            Assert.That(sut.DefensePercentage, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ShouldIncreaseMeleePowerWhenASwordIsPicked()
+        {
+            var sut = new MeleeWarrior();
+            int meleePowerPre = sut.MeleePower;
+            var weapon = new Weapon(WeaponType.Sword);
+            sut.addWeapon(weapon);
+
+            Assert.That(sut.MeleePower, Is.EqualTo(meleePowerPre + weapon.Power));
+        }
+
+        [Test]
+        public void ShouldIncreaseMagicPowerWhenAStaffIsPicked()
+        {
+            var sut = new MagicWarrior();
+            int magicPowerPre = sut.MagicPower;
+            var weapon = new Weapon(WeaponType.Staff);
+            sut.addWeapon(weapon);
+
+            Assert.That(sut.MagicPower, Is.EqualTo(magicPowerPre + weapon.Power));
         }
     }
 }

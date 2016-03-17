@@ -46,6 +46,12 @@ namespace GridWarModel.Logic
                 throw new InvalidOperationException("Can't handle more than one weapon!. Player already has a weapon.");
 
             this.weapon = weapon;
+
+            // Increase warrior's power by weapon power
+            if (weapon.WeaponType == WeaponType.Sword)
+                this.MeleePower += this.weapon.Power;
+            else if (weapon.WeaponType == WeaponType.Staff)
+                this.MagicPower += this.weapon.Power;            
         }
 
         public void dropWeapon()

@@ -152,7 +152,7 @@ namespace GridWarModel.Logic
             {
                 Console.WriteLine("\nTurn: " + Status.Turn.ToString());
                 Warrior warrior1 = chooseAWarrior();
-                Weapon weapon = new Weapon(warrior1 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
+                Weapon weapon = new Weapon(warrior1 is MeleeWarrior ? WeaponType.Sword : WeaponType.Staff);
                 warrior1.addWeapon(weapon);
                 Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to warrior " + warrior1.Id);
 
@@ -163,7 +163,7 @@ namespace GridWarModel.Logic
                 }
                 else
                 {
-                    weapon = new Weapon(warrior2 is MeleeWorrior ? WeaponType.Sword : WeaponType.Staff);
+                    weapon = new Weapon(warrior2 is MeleeWarrior ? WeaponType.Sword : WeaponType.Staff);
                     warrior2.addWeapon(weapon);
                     Console.WriteLine("Added a " + weapon.WeaponType.ToString() + " to warrior " + warrior2.Id);
                 }
