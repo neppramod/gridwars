@@ -16,7 +16,7 @@ namespace GridWarModel.Logic
         {
             if (CanMoveWarrierTo(warrior, direction))
                 MoveWarriorTo(warrior, direction);
-            else throw new InvalidOperationException("Can't move warrier to " + direction.ToString());            
+            else throw new InvalidOperationException("\nCan't move warrier to " + direction.ToString());            
         }
 
               
@@ -72,14 +72,14 @@ namespace GridWarModel.Logic
             // Clear previous position. Set new position
             if (ROOMS[warrior.Position.X, warrior.Position.Y] == 1)
             {
-                Console.WriteLine("Cannot move to " + warrior.Position.X + ", " + warrior.Position.Y + ". A player exists.");
+                Console.WriteLine("\nCannot move to " + warrior.Position.X + ", " + warrior.Position.Y + ". A player exists.");
                 warrior.Position.X = preWarriorX;
                 warrior.Position.Y = preWarriorY;
             } else
             {
                 ROOMS[preWarriorX, preWarriorY] = 0;
                 ROOMS[warrior.Position.X, warrior.Position.Y] = 1;
-                Console.WriteLine("Player moved from " + preWarriorX + "," + preWarriorY + " to " + warrior.Position.X + ", " + warrior.Position.Y);
+                Console.WriteLine("\nPlayer moved from " + preWarriorX + "," + preWarriorY + " to " + warrior.Position.X + ", " + warrior.Position.Y);
             }
         }
 
