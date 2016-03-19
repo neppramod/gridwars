@@ -20,16 +20,8 @@ namespace GridWarModel.Logic
             if (Status.ActionCount == 0 || Status.ActionCount == 1)
                 Status.ActionCount++;
             
-            if (Status.ActionDirection != Direction.INVALID_DIRECTION)
-            {
-                try
-                {
-                    this.warrior.Move(Status.ActionDirection);
-                } catch(InvalidOperationException)
-                {
-                    Console.WriteLine("\nCould not move the player to " + Status.ActionDirection.ToString() + ", you miss a chance");
-                }
-            }                     
+            if (Status.ActionDirection != Direction.INVALID_DIRECTION)             
+                Board.boardInstance().MoveWarrior(this.warrior, Status.ActionDirection);            
         }
 
         public bool isDone()

@@ -12,28 +12,38 @@ namespace GridWarModel.Logic
         public const int PLAYER_COUNT = 2;
         public static List<Warrior> allWarriors = new List<Warrior>();
 
-        public static List<Warrior> getWarriorsForAPlayer(PlayerType playerType)
+        public List<Warrior> getWarriorsForAPlayer(PlayerType playerType)
         {
             return allWarriors.FindAll(w => w.Player == playerType);
         }
 
-        public static void switchTurn()
+        public int getWarriorsCountForAPlayer(PlayerType playerType)
+        {
+            return getWarriorsForAPlayer(playerType).Count;
+        }
+
+        public void addWarrior(Warrior warrior)
+        {
+            allWarriors.Add(warrior);
+        }
+
+        public void deleteWarrior(Warrior warrior)
+        {
+            allWarriors.Remove(warrior);
+        }
+
+        public void switchTurn()
         {
             Status.Turn = Status.Turn == PlayerType.PLAYER_1 ? PlayerType.PLAYER_2 : PlayerType.PLAYER_1;
-        }
+        }        
 
-        public static bool isPositionOccupied(Position position)
+        public Warrior createWarrior(char warriorType)
         {
-            return Board.ROOMS[position.X, position.Y] == 1;
-        }
-
-        public static Warrior createWarrior(char warriorType)
-        {
-            Warrior warrior;
+            Warrior warrior = null;
 
             if (char.ToUpper(warriorType) == 'M')
                 warrior = new MeleeWarrior();
-            else
+            else if (char.ToUpper(warriorType) == 'G')
                 warrior = new MagicWarrior();
 
             return warrior;

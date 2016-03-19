@@ -6,21 +6,138 @@ using System.Threading.Tasks;
 
 namespace GridWarModel.Logic
 {
-
+    /// <summary>
+    /// Board class is defined as singleton, because there should be only one Board in the game
+    /// and thus single set of ROOMS. However, any occupied ROOMS have to be reset during testing
+    /// </summary>
     public class Board
     {
         public const int BOARD_SIZE = 6;
-        public static int[,] ROOMS = new int[BOARD_SIZE, BOARD_SIZE];
-        
-        public static void Move(Warrior warrior, Direction direction)
+        public int[,] ROOMS = new int[BOARD_SIZE, BOARD_SIZE];
+
+        private static Board _board;
+        private Board()
         {
-            if (CanMoveWarrierTo(warrior, direction))
-                MoveWarriorTo(warrior, direction);
-            else throw new InvalidOperationException("\nCan't move warrier to " + direction.ToString());            
+            
         }
 
-              
-        private static bool CanMoveWarrierTo(Warrior warrior, Direction direction)
+        public static Board boardInstance()
+        {
+            if (_board == null)
+            {
+                _board = new Board();
+            }
+            return _board;
+        }
+        
+        public void MoveWarrior(Warrior warrior, Direction direction)
+        {
+            if (isInsideBoundary(warrior, direction))
+            {
+                MoveWarriorTo(warrior, direction);        
+            }            
+        }
+
+        public bool isPositionOccupied(Position position)
+        {
+            return ROOMS[position.X, position.Y] == 1;
+        }
+
+        public bool isPositionOccupied(int x, int y)
+        {
+            return ROOMS[x, y] == 1;
+        }
+
+        public AttackRange WarriorAttackRange(Warrior warrior)
+        {
+            int meleeWarriorsCount = countBoundaryElements(warrior, 1);
+            int magicWarriorsCount = countBoundaryElements(warrior, 2);
+
+            if (meleeWarriorsCount > magicWarriorsCount)
+                return AttackRange.MeleeRange;
+            else if (meleeWarriorsCount < magicWarriorsCount)
+                return AttackRange.MagicRange;
+            else // When both counts are equal
+            {
+                int chance = Util.random.Next(0, 2);
+                if (chance == 0)
+                    return AttackRange.MeleeRange;
+                else
+                    return AttackRange.MagicRange;
+            }
+            
+        } 
+        
+        public AttackType WarriorAttackType(Warrior warrior)
+        {
+            AttackType attackType = AttackType.NoAttack;
+            AttackRange attackRange = WarriorAttackRange(warrior);
+            int chance = Util.random.Next(1, 11);            
+
+            if (warrior is MeleeWarrior)
+            {
+                if (attackRange == AttackRange.MeleeRange)
+                {                    
+                    if (chance >= 1 && chance <= 8)
+                        attackType = AttackType.MeleeAttack;
+                    else if (chance == 9)
+                        attackType = AttackType.MagicAttack;
+
+                } else if (attackRange == AttackRange.MagicRange)
+                {
+                    if (chance >= 1 && chance <= 6)
+                        attackType = AttackType.MagicAttack;
+                }    
+            } else if (warrior is MagicWarrior)
+            {
+                if (attackRange == AttackRange.MagicRange)
+                {                 
+                    if (chance >= 1 && chance <= 9)
+                        attackType = AttackType.MagicAttack;                    
+
+                } else if (attackRange == AttackRange.MeleeRange)
+                {
+                    if (chance >= 1 && chance <= 8)
+                        attackType = AttackType.MagicAttack;
+                    else if (chance == 9)
+                        attackType = AttackType.MeleeAttack;
+                }
+            }
+
+            return attackType;
+        }       
+
+        public int countBoundaryElements(Warrior warrior, int deltaFromWarrior)
+        {
+            int count = 0;
+
+            int startX = warrior.Position.X - deltaFromWarrior;
+            int startY = warrior.Position.Y - deltaFromWarrior;
+            int endX = warrior.Position.X + deltaFromWarrior;
+            int endY = warrior.Position.Y + deltaFromWarrior;
+
+            for (int i = startX; i <= endX; i++)
+            {
+                if (i >= 0 && i < BOARD_SIZE)
+                {
+                    if (startY >= 0 && isPositionOccupied(i, startY)) count++;
+                    if (endY < BOARD_SIZE && isPositionOccupied(i, endY)) count++;
+                }
+            }
+
+            for (int i = startY + 1; i < endY; i++)
+            {
+                if (i >= 0 && i < BOARD_SIZE)
+                {
+                    if (startX >= 0 && isPositionOccupied(startX, i)) count++;
+                    if (endX < BOARD_SIZE && isPositionOccupied(endX, i)) count++;
+                }
+            }
+
+            return count;
+        }        
+
+        private bool isInsideBoundary(Warrior warrior, Direction direction)
         {
             if (warrior.Position.Y >= BOARD_SIZE - 1 && (direction == Direction.EAST || direction == Direction.EAST_NORTH || direction == Direction.EAST_SOUTH)) // Can't go right off the edge
                 return false;
@@ -34,53 +151,54 @@ namespace GridWarModel.Logic
             return true;
         }
         
-        private static void MoveWarriorTo(Warrior warrior, Direction direction)
-        {
-            // Previous position
-            int preWarriorX = warrior.Position.X;
-            int preWarriorY = warrior.Position.Y;
+        private void MoveWarriorTo(Warrior warrior, Direction direction)
+        {            
+            // New delta to move based on the direction
+            int deltaX = 0;
+            int deltaY = 0;
                      
             if (direction == Direction.EAST)
-                warrior.Position.Y += 1;
+                deltaY += 1;
             else if (direction == Direction.WEST)
-                warrior.Position.Y -= 1;
+                deltaY -= 1;
             else if (direction == Direction.NORTH)
-                warrior.Position.X -= 1;
+                deltaX -= 1;
             else if (direction == Direction.SOUTH)
-                warrior.Position.X += 1;
+                deltaX += 1;
             else if (direction == Direction.EAST_NORTH)
             {
-                warrior.Position.Y += 1;
-                warrior.Position.X -= 1;
+                deltaY += 1;
+                deltaX -= 1;
             }
             else if (direction == Direction.WEST_NORTH)
             {
-                warrior.Position.Y -= 1;
-                warrior.Position.X -= 1;
+                deltaY -= 1;
+                deltaX -= 1;
             }
             else if (direction == Direction.WEST_SOUTH)
             {
-                warrior.Position.Y -= 1;
-                warrior.Position.X += 1;
+                deltaY -= 1;
+                deltaX += 1;
             }
             else if (direction == Direction.EAST_SOUTH)
             {
-                warrior.Position.Y += 1;
-                warrior.Position.X += 1;
+                deltaY += 1;
+                deltaX += 1;
             }
-
-            // Clear previous position. Set new position
-            if (ROOMS[warrior.Position.X, warrior.Position.Y] == 1)
+            
+            // Update new position                        
+            if (!isNewPositionOccupied(warrior, deltaX, deltaY))
             {
-                Console.WriteLine("\nCannot move to " + warrior.Position.X + ", " + warrior.Position.Y + ". A player exists.");
-                warrior.Position.X = preWarriorX;
-                warrior.Position.Y = preWarriorY;
-            } else
-            {
-                ROOMS[preWarriorX, preWarriorY] = 0;
+                ROOMS[warrior.Position.X, warrior.Position.Y] = 0;             
+                warrior.Position.X += deltaX;
+                warrior.Position.Y += deltaY;
                 ROOMS[warrior.Position.X, warrior.Position.Y] = 1;
-                Console.WriteLine("\nPlayer moved from " + preWarriorX + "," + preWarriorY + " to " + warrior.Position.X + ", " + warrior.Position.Y);
             }
+        }
+        
+        private bool isNewPositionOccupied(Warrior warrior, int deltaX, int deltaY)
+        {
+            return ROOMS[warrior.Position.X + deltaX, warrior.Position.Y + deltaY] == 1;
         }       
     }
 }

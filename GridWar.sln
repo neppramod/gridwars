@@ -7,12 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridWarModel.Logic", "GridW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridWar.UnitTesting", "GridWar.UnitTesting\GridWar.UnitTesting.csproj", "{4BEB44FF-182C-43AC-ABD2-EE39CA8F26B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridWar.Run", "GridWar.Run\GridWar.Run.csproj", "{D22ABA03-840B-47FC-B7C4-6344EC81ACD1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{FA4A39A3-E58A-44D7-9432-F7199BA61B6D} = {FA4A39A3-E58A-44D7-9432-F7199BA61B6D}
-		{4BEB44FF-182C-43AC-ABD2-EE39CA8F26B2} = {4BEB44FF-182C-43AC-ABD2-EE39CA8F26B2}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +21,6 @@ Global
 		{4BEB44FF-182C-43AC-ABD2-EE39CA8F26B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BEB44FF-182C-43AC-ABD2-EE39CA8F26B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BEB44FF-182C-43AC-ABD2-EE39CA8F26B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D22ABA03-840B-47FC-B7C4-6344EC81ACD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D22ABA03-840B-47FC-B7C4-6344EC81ACD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D22ABA03-840B-47FC-B7C4-6344EC81ACD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D22ABA03-840B-47FC-B7C4-6344EC81ACD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

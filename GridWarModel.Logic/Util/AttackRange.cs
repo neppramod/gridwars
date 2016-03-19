@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace GridWarModel.Logic
 {
-    public enum AttackType { MeleeAttack, MagicAttack, NoAttack};
+    public enum AttackRange { MeleeRange, MagicRange }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GridWar.UnitTesting
 {
-    [TestFixture]
+    [TestFixture]    
     public class AWeapon
     {
         [Test]

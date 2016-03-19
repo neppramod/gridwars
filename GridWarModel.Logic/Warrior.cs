@@ -40,32 +40,27 @@ namespace GridWarModel.Logic
             return weapon == null ? false : true;
         }
 
-        public void addWeapon(Weapon weapon)
+        public bool addWeapon(Weapon weapon)
         {
-            if (this.weapon != null)
-                throw new InvalidOperationException("Can't handle more than one weapon!. Player already has a weapon.");
+            if (this.weapon == null)
+            {
+                this.weapon = weapon;
 
-            this.weapon = weapon;
+                // Increase warrior's power by weapon power
+                if (weapon.WeaponType == WeaponType.Sword)
+                    this.MeleePower += this.weapon.Power;
+                else if (weapon.WeaponType == WeaponType.Staff)
+                    this.MagicPower += this.weapon.Power;
+                return true;
+            }
 
-            // Increase warrior's power by weapon power
-            if (weapon.WeaponType == WeaponType.Sword)
-                this.MeleePower += this.weapon.Power;
-            else if (weapon.WeaponType == WeaponType.Staff)
-                this.MagicPower += this.weapon.Power;            
+            return false;
         }
 
         public void dropWeapon()
         {
-            if (this.weapon == null)
-                throw new InvalidOperationException("Can't drop non-existent weapon!. Player does not have a weapon.");
-
-            this.weapon = null;
-        }
-
-        // Does not consider orientation of a player, direction is based on the orientation of the board
-        public void Move(Direction direction)
-        {
-            Board.Move(this, direction);
+            if (this.weapon != null)
+                this.weapon = null;
         }
 
         // Get attack type
