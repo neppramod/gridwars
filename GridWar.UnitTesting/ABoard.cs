@@ -140,22 +140,6 @@ namespace GridWar.UnitTesting
             Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
         }
         
-        [Test]
-        public void ShouldGetAttackTypeRandomNessForMeleeWarrior()
-        {
-            var sut = Board.boardInstance();
-            var warrior = new MeleeWarrior();
-
-            // Melee range
-            warrior.Position = new Position{ X=1, Y=1};
-            sut.ROOMS[0, 2] = 1;
-            sut.ROOMS[2, 2] = 1;
-            sut.ROOMS[3, 1] = 1;
-
-            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MeleeRange));
-            AttackType attackType = sut.WarriorAttackType(warrior);            
-        } 
-
         [TearDown]
         public void Reset()
         {
