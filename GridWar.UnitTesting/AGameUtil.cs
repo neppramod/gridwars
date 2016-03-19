@@ -57,6 +57,35 @@ namespace GridWar.UnitTesting
 
             Assert.That(Status.Turn, Is.Not.EqualTo(turnPre));
             Assert.That(Status.Turn.GetType(), Is.EqualTo(turnPre.GetType()));
-        }        
+        }
+
+        [Test]
+        public void ShouldSelectRangeBasedOnOccupiedBoundaryCells()
+        {
+            var sut = new GameUtil();
+            var board = Board.boardInstance();
+            var warrior = new MeleeWarrior();
+            warrior.Position = new Position { X = 0, Y = 0 };
+
+            board.ROOMS[0, 1] = 1;
+            board.ROOMS[1, 1] = 1;
+            board.ROOMS[1, 2] = 1;
+            board.ROOMS[2, 0] = 1;
+            board.ROOMS[2, 2] = 1;
+
+            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
+
+            warrior.Position = new Position { X = 0, Y = 3 };
+            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
+
+            warrior.Position = new Position { X = 2, Y = 1 };
+            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MeleeRange));
+
+            board.ROOMS[0, 2] = 1;
+            board.ROOMS[2, 3] = 1;
+            board.ROOMS[4, 0] = 1;
+            board.ROOMS[4, 2] = 1;
+            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
+        }
     }
 }

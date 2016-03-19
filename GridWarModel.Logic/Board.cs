@@ -46,66 +46,7 @@ namespace GridWarModel.Logic
         public bool isPositionOccupied(int x, int y)
         {
             return ROOMS[x, y] == 1;
-        }
-
-        public AttackRange WarriorAttackRange(Warrior warrior)
-        {
-            int meleeWarriorsCount = countBoundaryElements(warrior, 1);
-            int magicWarriorsCount = countBoundaryElements(warrior, 2);
-
-            if (meleeWarriorsCount > magicWarriorsCount)
-                return AttackRange.MeleeRange;
-            else if (meleeWarriorsCount < magicWarriorsCount)
-                return AttackRange.MagicRange;
-            else // When both counts are equal
-            {
-                int chance = Util.random.Next(0, 2);
-                if (chance == 0)
-                    return AttackRange.MeleeRange;
-                else
-                    return AttackRange.MagicRange;
-            }
-            
-        } 
-        
-        public AttackType WarriorAttackType(Warrior warrior)
-        {
-            AttackType attackType = AttackType.NoAttack;
-            AttackRange attackRange = WarriorAttackRange(warrior);
-            int chance = Util.random.Next(1, 11);            
-
-            if (warrior is MeleeWarrior)
-            {
-                if (attackRange == AttackRange.MeleeRange)
-                {                    
-                    if (chance >= 1 && chance <= 8)
-                        attackType = AttackType.MeleeAttack;
-                    else if (chance == 9)
-                        attackType = AttackType.MagicAttack;
-
-                } else if (attackRange == AttackRange.MagicRange)
-                {
-                    if (chance >= 1 && chance <= 6)
-                        attackType = AttackType.MagicAttack;
-                }    
-            } else if (warrior is MagicWarrior)
-            {
-                if (attackRange == AttackRange.MagicRange)
-                {                 
-                    if (chance >= 1 && chance <= 9)
-                        attackType = AttackType.MagicAttack;                    
-
-                } else if (attackRange == AttackRange.MeleeRange)
-                {
-                    if (chance >= 1 && chance <= 8)
-                        attackType = AttackType.MagicAttack;
-                    else if (chance == 9)
-                        attackType = AttackType.MeleeAttack;
-                }
-            }
-
-            return attackType;
-        }       
+        }     
 
         public int countBoundaryElements(Warrior warrior, int deltaFromWarrior)
         {
