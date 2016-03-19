@@ -21,10 +21,5 @@ namespace GridWarModel.Logic
             this.MeleePower = Util.random.Next(MIN_MELEE_START_POWER, MAX_MELEE_START_POWER + 1);
             this.MagicPower = Util.random.Next(MIN_MAGIC_START_POWER, MAX_MAGIC_START_POWER + 1);            
         }
-
-        public override AttackType getAttackType()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

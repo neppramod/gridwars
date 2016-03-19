@@ -62,8 +62,5 @@ namespace GridWarModel.Logic
             if (this.weapon != null)
                 this.weapon = null;
         }
-
-        // Get attack type
-        public abstract AttackType getAttackType();
     }
 }

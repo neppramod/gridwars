@@ -110,52 +110,8 @@ namespace GridWar.UnitTesting
             sut.ROOMS[2,2] = 1;
 
             Assert.That(sut.countBoundaryElements(warrior, 2), Is.EqualTo(3));
-        }
-
-        [Test]
-        public void ShouldSelectRangeBasedOnOccupiedBoundaryCells()
-        {
-            var sut = Board.boardInstance();
-            var warrior = new MeleeWarrior();
-            warrior.Position = new Position { X = 0, Y = 0 };
-
-            sut.ROOMS[0,1] = 1;
-            sut.ROOMS[1,1] = 1;
-            sut.ROOMS[1,2] = 1;
-            sut.ROOMS[2,0] = 1;
-            sut.ROOMS[2,2] = 1;
-
-            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
-
-            warrior.Position = new Position { X = 0, Y = 3 };
-            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
-
-            warrior.Position = new Position { X = 2, Y = 1 };
-            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MeleeRange));
-
-            sut.ROOMS[0,2] = 1;
-            sut.ROOMS[2,3] = 1;
-            sut.ROOMS[4,0] = 1;
-            sut.ROOMS[4,2] = 1;
-            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
-        }
+        }        
         
-        [Test]
-        public void ShouldGetAttackTypeRandomNessForMeleeWarrior()
-        {
-            var sut = Board.boardInstance();
-            var warrior = new MeleeWarrior();
-
-            // Melee range
-            warrior.Position = new Position{ X=1, Y=1};
-            sut.ROOMS[0, 2] = 1;
-            sut.ROOMS[2, 2] = 1;
-            sut.ROOMS[3, 1] = 1;
-
-            Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MeleeRange));
-            AttackType attackType = sut.WarriorAttackType(warrior);            
-        } 
-
         [TearDown]
         public void Reset()
         {
