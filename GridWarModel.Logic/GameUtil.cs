@@ -214,9 +214,10 @@ namespace GridWarModel.Logic
 
         public void MoveWarrior(Warrior warrior, Direction direction)
         {
-            if (isWarriorInsideBoundary(warrior, direction))
-            {
-                Board board = Board.boardInstance();
+            Board board = Board.boardInstance();
+
+            if (board.IsPositionInsideBoundary(warrior.Position, direction))
+            {                
                 Position deltaMovement = board.GetMovementDelta(direction);
 
                 int deltaX = deltaMovement.X;
@@ -235,11 +236,6 @@ namespace GridWarModel.Logic
                     warrior.DefensePercentage = defencePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defencePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
                 }
             }
-        }
-
-        private bool isWarriorInsideBoundary(Warrior warrior, Direction direction)
-        {                        
-            return Board.boardInstance().IsPositionInsideBoundary(warrior.Position, direction);
         }
     }
 }
