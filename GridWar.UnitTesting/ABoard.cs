@@ -24,7 +24,7 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldBeAbleToMoveAWarrior()
         {
-            var sut = Board.boardInstance();
+            var sut = new GameUtil();
 
             // Create a Fake
             var warrior = new MeleeWarrior();
@@ -43,16 +43,16 @@ namespace GridWar.UnitTesting
         [Test]
         public void APositionShouldBeOccupiedAfterAWarriorIsMovedThere()
         {
-            var sut = Board.boardInstance();
+            var sut = Board.boardInstance();            
             var warrior = new MeleeWarrior();
             warrior.Position = new Position { X = 2, Y = 2 };
 
             var positionXpre = warrior.Position.X;
             var positionYpre = warrior.Position.Y;
                         
-            sut.MoveWarrior(warrior, Direction.EAST_NORTH);
+            new GameUtil().MoveWarrior(warrior, Direction.EAST_NORTH);
 
-            Assert.That(sut.isPositionOccupied(new Position { X = positionXpre - 1, Y = positionYpre + 1 }), Is.EqualTo(true));            
+            Assert.That(sut.IsPositionOccupied(new Position { X = positionXpre - 1, Y = positionYpre + 1 }), Is.EqualTo(true));            
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace GridWar.UnitTesting
             sut.ROOMS[2, 4] = 1;
             sut.ROOMS[4, 3] = 1;
 
-            Assert.That(sut.countBoundaryElements(warrior, 1), Is.EqualTo(2));
+            Assert.That(sut.CountBoundaryElements(warrior.Position, 1), Is.EqualTo(2));
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace GridWar.UnitTesting
             sut.ROOMS[5,1] = 1;
             sut.ROOMS[5,4] = 1;
 
-            Assert.That(sut.countBoundaryElements(warrior, 2), Is.EqualTo(5));
+            Assert.That(sut.CountBoundaryElements(warrior.Position, 2), Is.EqualTo(5));
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace GridWar.UnitTesting
             sut.ROOMS[4, 4] = 1;
             sut.ROOMS[4, 5] = 1;
 
-            Assert.That(sut.countBoundaryElements(warrior, 1), Is.EqualTo(3));
+            Assert.That(sut.CountBoundaryElements(warrior.Position, 1), Is.EqualTo(3));
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace GridWar.UnitTesting
             sut.ROOMS[2,0] = 1;
             sut.ROOMS[2,2] = 1;
 
-            Assert.That(sut.countBoundaryElements(warrior, 2), Is.EqualTo(3));
+            Assert.That(sut.CountBoundaryElements(warrior.Position, 2), Is.EqualTo(3));
         }        
         
         [TearDown]

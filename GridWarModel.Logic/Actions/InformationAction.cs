@@ -9,10 +9,12 @@ namespace GridWarModel.Logic
     public class InformationAction : IPlayAction
     {
         Warrior warrior;
+        GameUtil gameUtil;
 
-        public InformationAction(Warrior warrior)
+        public InformationAction(Warrior warrior, GameUtil gameUtil)
         {
             this.warrior = warrior;
+            this.gameUtil = gameUtil;
         }
 
         public void doAction()

@@ -42,10 +42,10 @@ namespace GridWar.UnitTesting
             var sut = new GameUtil();
             var warrior = sut.createWarrior('m');
             sut.addWarrior(warrior);
-            var warriroCountPre = sut.getWarriorsCountForAPlayer(Status.Turn);
+            var warriorCountPre = sut.getWarriorsCountForAPlayer(Status.Turn);
             sut.deleteWarrior(warrior);
 
-            Assert.That(sut.getWarriorsCountForAPlayer(Status.Turn), Is.EqualTo(warriroCountPre - 1));
+            Assert.That(sut.getWarriorsCountForAPlayer(Status.Turn), Is.EqualTo(warriorCountPre - 1));
         }
 
         [Test]
@@ -86,6 +86,39 @@ namespace GridWar.UnitTesting
             board.ROOMS[4, 0] = 1;
             board.ROOMS[4, 2] = 1;
             Assert.That(sut.WarriorAttackRange(warrior), Is.EqualTo(AttackRange.MagicRange));
+        }
+
+        [Test]
+        public void ShouldFindAWarriorAtAPosition()
+        {
+            var sut = new GameUtil();
+            MeleeWarrior meleeWarrior = new MeleeWarrior();
+            meleeWarrior.Position = new Position { X = 3, Y = 4 };
+            sut.addWarrior(meleeWarrior);
+
+            meleeWarrior = new MeleeWarrior();
+            meleeWarrior.Position = new Position { X = 2, Y = 1 };
+            sut.addWarrior(meleeWarrior);
+
+            Warrior foundWarrior1 = sut.findWarriorAtARoom(3, 4);
+            Assert.That(foundWarrior1, Is.Not.Null);
+
+            Warrior foundWarrior2 = sut.findWarriorAtARoom(2, 2);
+            Assert.That(foundWarrior2, Is.EqualTo(null));
+        }
+
+        [TearDown]
+        public void Reset()
+        {
+            // Reset the used ROOM
+            for (int i = 0; i < Board.BOARD_SIZE; i++)
+            {
+                for (int j = 0; j < Board.BOARD_SIZE; j++)
+                {
+                    Board.boardInstance().ROOMS[i, j] = 0;
+                }
+            }
+
         }
     }
 }

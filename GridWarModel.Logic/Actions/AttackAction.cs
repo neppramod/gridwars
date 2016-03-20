@@ -8,11 +8,13 @@ namespace GridWarModel.Logic
 {
     public class AttackAction : IPlayAction
     {
-        Warrior warrior;        
+        Warrior warrior;
+        GameUtil gameUtil;
 
-        public AttackAction(Warrior warrior)
+        public AttackAction(Warrior warrior, GameUtil gameUtil)
         {
             this.warrior = warrior;
+            this.gameUtil = gameUtil;
         }
 
         public void doAction()

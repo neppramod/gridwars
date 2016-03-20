@@ -52,10 +52,12 @@
     <Compile Include="AGameUtil.cs" />
     <Compile Include="AMagicWarrior.cs" />
     <Compile Include="AMeleeWarrior.cs" />
+    <Compile Include="APosition.cs" />
     <Compile Include="ASurrenderAction.cs" />
     <Compile Include="AWarrior.cs" />
     <Compile Include="AWeapon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextFixtureAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GridWarModel.Logic\GridWarModel.Logic.csproj">

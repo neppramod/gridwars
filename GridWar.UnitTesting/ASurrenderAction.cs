@@ -16,7 +16,8 @@ namespace GridWar.UnitTesting
         public void ShouldSetExitStatusToTrueWhenActionIsDone()
         {
             var mockItem = new Mock<Warrior>();
-            var sut = new SurrenderAction(mockItem.Object);
+            var mockGameUtil = new Mock<GameUtil>();
+            var sut = new SurrenderAction(mockItem.Object, mockGameUtil.Object);
             var exitStatusPre = Status.Exit;
 
             sut.doAction();

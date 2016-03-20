@@ -8,11 +8,13 @@ namespace GridWarModel.Logic
 {
     public class MoveAction : IPlayAction
     {
-        Warrior warrior;        
+        Warrior warrior;
+        GameUtil gameUtil;        
 
-        public MoveAction(Warrior warrior)
+        public MoveAction(Warrior warrior, GameUtil gameUtil)
         {
             this.warrior = warrior;
+            this.gameUtil = gameUtil;
         }
 
         public void doAction()
@@ -21,7 +23,7 @@ namespace GridWarModel.Logic
                 Status.ActionCount++;
             
             if (Status.ActionDirection != Direction.INVALID_DIRECTION)             
-                Board.boardInstance().MoveWarrior(this.warrior, Status.ActionDirection);            
+                gameUtil.MoveWarrior(this.warrior, Status.ActionDirection);            
         }
 
         public bool isDone()

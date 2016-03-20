@@ -50,7 +50,7 @@ namespace GridWar.UnitTesting
         public void ShouldIncreaseMeleePowerWhenASwordIsPicked()
         {
             var sut = new MeleeWarrior();
-            int meleePowerPre = sut.MeleePower;
+            double meleePowerPre = sut.MeleePower;
             var weapon = new Weapon(WeaponType.Sword);
             sut.addWeapon(weapon);
 
@@ -61,7 +61,7 @@ namespace GridWar.UnitTesting
         public void ShouldIncreaseMagicPowerWhenAStaffIsPicked()
         {
             var sut = new MagicWarrior();
-            int magicPowerPre = sut.MagicPower;
+            double magicPowerPre = sut.MagicPower;
             var weapon = new Weapon(WeaponType.Staff);
             sut.addWeapon(weapon);
 

@@ -16,10 +16,10 @@ namespace GridWarModel.Logic
         public const int MIN_DEFENSE_PERCENTAGE = 0;
         public const int MAX_DEFENSE_PERCENTAGE = 100;
 
-        public int HitPoints { get; protected set; }
-        public int MeleePower {get; set;}
-        public int MagicPower { get; set;}
-        public int DefensePercentage { get; protected set;}
+        public double HitPoints { get; set; }
+        public double MeleePower {get; set;}
+        public double MagicPower { get; set;}
+        public double DefensePercentage { get; set;}
 
         public  int Id { get; set; }        
 
