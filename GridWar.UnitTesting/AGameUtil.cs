@@ -16,21 +16,22 @@ namespace GridWar.UnitTesting
         public void ShouldBeAbleToCreateAWarrior()
         {
             // M for Melee, G for Magic
-            var sut = new GameUtil().createWarrior('M');
+            var gameUtil = new GameUtil(null);
+            var sut = gameUtil.createWarrior('M');
             Assert.That(sut.GetType(), Is.EqualTo(new MeleeWarrior().GetType()));
 
-            sut = new GameUtil().createWarrior('G');
+            sut = gameUtil.createWarrior('G');
             Assert.That(sut.GetType(), Is.EqualTo(new MagicWarrior().GetType()));
 
             // Should not create a warrior for any other character
-            sut = new GameUtil().createWarrior('A');
+            sut = gameUtil.createWarrior('A');
             Assert.That(sut, Is.Null);
         }
 
         [Test]
         public void ShouldBeAbleToAddAWarrior()
         {
-            var sut = new GameUtil();
+            var sut = new GameUtil(null);
             var warriorCountPre = sut.getWarriorsCountForAPlayer(Status.Turn);
             sut.addWarrior(sut.createWarrior('M'));
             Assert.That(sut.getWarriorsCountForAPlayer(Status.Turn), Is.EqualTo(warriorCountPre + 1));
@@ -39,7 +40,7 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldBeAbleToDeleteAWarrior()
         {
-            var sut = new GameUtil();
+            var sut = new GameUtil(null);
             var warrior = sut.createWarrior('m');
             sut.addWarrior(warrior);
             var warriorCountPre = sut.getWarriorsCountForAPlayer(Status.Turn);
@@ -51,7 +52,7 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldBeAbleToSwitchTurns()
         {
-            var sut = new GameUtil();
+            var sut = new GameUtil(null);
             PlayerType turnPre = Status.Turn;
             sut.switchTurn();
 
@@ -62,8 +63,8 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldSelectRangeBasedOnOccupiedBoundaryCells()
         {
-            var sut = new GameUtil();
-            var board = Board.boardInstance();
+            var board = new Board();
+            var sut = new GameUtil(board);            
             var warrior = new MeleeWarrior();
             warrior.Position = new Position { X = 0, Y = 0 };
 
@@ -91,7 +92,7 @@ namespace GridWar.UnitTesting
         [Test]
         public void ShouldFindAWarriorAtAPosition()
         {
-            var sut = new GameUtil();
+            var sut = new GameUtil(null);
             MeleeWarrior meleeWarrior = new MeleeWarrior();
             meleeWarrior.Position = new Position { X = 3, Y = 4 };
             sut.addWarrior(meleeWarrior);
@@ -110,7 +111,8 @@ namespace GridWar.UnitTesting
 		[Test]
         public void ShouldBeAbleToMoveAWarrior()
         {
-            var sut = new GameUtil();
+            Board board = new Board();
+            var sut = new GameUtil(board);
 
             // Create a Fake
             var warrior = new MeleeWarrior();
@@ -128,9 +130,9 @@ namespace GridWar.UnitTesting
 		[Test]
         public void APositionShouldBeOccupiedAfterAWarriorIsMovedThere()
         {
-            var sut = Board.boardInstance();            
+            var sut = new Board();
             var warrior = new MeleeWarrior();
-			var gameUtil = new GameUtil();
+			var gameUtil = new GameUtil(sut);
 			
             warrior.Position = new Position { X = 2, Y = 2 };
 
@@ -140,20 +142,6 @@ namespace GridWar.UnitTesting
             gameUtil.MoveWarrior(warrior, Direction.EAST_NORTH);
 
             Assert.That(sut.IsPositionOccupied(new Position { X = positionXpre - 1, Y = positionYpre + 1 }), Is.EqualTo(true));            
-        }
-
-        [TearDown]
-        public void Reset()
-        {
-            // Reset the used ROOM
-            for (int i = 0; i < Board.BOARD_SIZE; i++)
-            {
-                for (int j = 0; j < Board.BOARD_SIZE; j++)
-                {
-                    Board.boardInstance().ROOMS[i, j] = 0;
-                }
-            }
-
         }
     }
 }

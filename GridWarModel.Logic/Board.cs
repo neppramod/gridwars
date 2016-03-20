@@ -15,19 +15,6 @@ namespace GridWarModel.Logic
         public const int BOARD_SIZE = 6;
         public int[,] ROOMS = new int[BOARD_SIZE, BOARD_SIZE];
 
-        private static Board _board;
-        private Board()
-        {            
-        }
-
-        public static Board boardInstance()
-        {
-            if (_board == null)
-            {
-                _board = new Board();
-            }
-            return _board;
-        }
         // Should be a valid location inside the board. Didn't check valid location here, because it is checked in 
         // IsPositionInsideBoundary method.
         // It does not make sense to return false for array index out of value.

@@ -12,6 +12,13 @@ namespace GridWarModel.Logic
         public const int PLAYER_COUNT = 2;
         public List<Warrior> allWarriors = new List<Warrior>();
 
+        private Board board;
+
+        public GameUtil(Board board)
+        {
+            this.board = board;    
+        }
+
         public List<Warrior> getWarriorsForAPlayer(PlayerType playerType)
         {
             return allWarriors.FindAll(w => w.Player == playerType);
@@ -67,8 +74,7 @@ namespace GridWarModel.Logic
         }
 
         public AttackRange WarriorAttackRange(Warrior warrior)
-        {
-            Board board = Board.boardInstance();
+        {            
             int meleeWarriorsCount = board.CountBoundaryElements(warrior.Position, 1);
             int magicWarriorsCount = board.CountBoundaryElements(warrior.Position, 2);
 
@@ -139,8 +145,7 @@ namespace GridWarModel.Logic
         /// <returns>Whether a warrior could attack at a location or not ?</returns>        
         public bool WarriorAttack(Warrior warrior, AttackType attackType, Direction firstDirection, Direction secondDirection = Direction.INVALID_DIRECTION)
         {
-            Position warriorPosition = warrior.Position;
-            Board board = Board.boardInstance();
+            Position warriorPosition = warrior.Position;            
 
             if (board.IsPositionInsideBoundary(warriorPosition, firstDirection, secondDirection))
             {
@@ -214,8 +219,6 @@ namespace GridWarModel.Logic
 
         public void MoveWarrior(Warrior warrior, Direction direction)
         {
-            Board board = Board.boardInstance();
-
             if (board.IsPositionInsideBoundary(warrior.Position, direction))
             {                
                 Position deltaMovement = board.GetMovementDelta(direction);
