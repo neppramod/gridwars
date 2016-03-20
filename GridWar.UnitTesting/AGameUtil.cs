@@ -106,6 +106,41 @@ namespace GridWar.UnitTesting
             Warrior foundWarrior2 = sut.findWarriorAtARoom(2, 2);
             Assert.That(foundWarrior2, Is.EqualTo(null));
         }
+		
+		[Test]
+        public void ShouldBeAbleToMoveAWarrior()
+        {
+            var sut = new GameUtil();
+
+            // Create a Fake
+            var warrior = new MeleeWarrior();
+            warrior.Position = new Position { X = 2, Y = 2 };            
+
+            var positionXpre = warrior.Position.X;
+            var positionYpre = warrior.Position.Y;
+
+            sut.MoveWarrior(warrior, Direction.EAST_NORTH);
+
+            Assert.That(warrior.Position.X, Is.EqualTo(positionXpre -1));
+            Assert.That(warrior.Position.Y, Is.EqualTo(positionYpre + 1));
+        }
+		
+		[Test]
+        public void APositionShouldBeOccupiedAfterAWarriorIsMovedThere()
+        {
+            var sut = Board.boardInstance();            
+            var warrior = new MeleeWarrior();
+			var gameUtil = new GameUtil();
+			
+            warrior.Position = new Position { X = 2, Y = 2 };
+
+            var positionXpre = warrior.Position.X;
+            var positionYpre = warrior.Position.Y;
+                        
+            gameUtil.MoveWarrior(warrior, Direction.EAST_NORTH);
+
+            Assert.That(sut.IsPositionOccupied(new Position { X = positionXpre - 1, Y = positionYpre + 1 }), Is.EqualTo(true));            
+        }
 
         [TearDown]
         public void Reset()

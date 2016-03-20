@@ -28,7 +28,10 @@ namespace GridWarModel.Logic
             }
             return _board;
         }
-
+        // Should be a valid location inside the board. Didn't check valid location here, because it is checked in 
+        // IsPositionInsideBoundary method.
+        // It does not make sense to return false for array index out of value.
+        // Which means a user can move to that place (which is wrong).
         public bool IsPositionOccupied(Position position)
         {
             return ROOMS[position.X, position.Y] == 1;
@@ -83,6 +86,17 @@ namespace GridWarModel.Logic
             }            
         }
 
+        /// <summary>
+        /// A way for the player to check if a position is attackable. 
+        /// The secondDirection gives a way to get position coordinates two cells away
+        /// Using secondDirection a warrior can attack to that cell
+        /// E.g., To attack from positon = {2,2} to {4,3}, firstDirection = Direction.SOUTH or Direction.SOUTH_EAST, 
+        /// secondDirection = Direction=SOUTH_EAST or Direction.SOUTH
+        /// </summary>
+        /// <param name="position">Current position</param>
+        /// <param name="firstDirection">Adjacent position direction</param>
+        /// <param name="secondDirection">If secondDirection == Direction.INAVALID_DIRECTION only firstDirection is used</param>
+        /// <returns></returns>
         public Position GetPositionInADirection(Position position, Direction firstDirection, Direction secondDirection = Direction.INVALID_DIRECTION)
         {
             Position deltaPosition = GetMovementDelta(firstDirection);
@@ -149,9 +163,13 @@ namespace GridWarModel.Logic
 
             return new Position { X = deltaX, Y = deltaY };
         }
-        
+
+        // Should be a valid location inside the board. Didn't check valid location here, because it is checked in 
+        // IsPositionInsideBoundary method.
+        // It does not make sense to return false for array index out of value.
+        // Which means a user can move to that place (which is wrong).
         public bool IsNewPositionOccupied(Position position, int deltaX, int deltaY)
-        {
+        {            
             return ROOMS[position.X + deltaX, position.Y + deltaY] == 1;
         }       
     }
