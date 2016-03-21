@@ -75,12 +75,12 @@ namespace GridWarModel.Logic
 
         public AttackRange WarriorAttackRange(Warrior warrior)
         {            
-            int meleeWarriorsCount = board.CountBoundaryElements(warrior.Position, 1);
-            int magicWarriorsCount = board.CountBoundaryElements(warrior.Position, 2);
+            int meleeRangeWarriorsCount = board.CountBoundaryElements(warrior.Position, 1);
+            int magicRangeWarriorsCount = board.CountBoundaryElements(warrior.Position, 2);
 
-            if (meleeWarriorsCount > magicWarriorsCount)
+            if (meleeRangeWarriorsCount > magicRangeWarriorsCount)
                 return AttackRange.MeleeRange;
-            else if (meleeWarriorsCount < magicWarriorsCount)
+            else if (meleeRangeWarriorsCount < magicRangeWarriorsCount)
                 return AttackRange.MagicRange;
             else // When both counts are equal
             {
@@ -92,6 +92,8 @@ namespace GridWarModel.Logic
             }
         }        
 
+		// Selects AttackType based on attack range, random chance and type of warrior
+		// Can't test it because of randomness.
         public AttackType WarriorAttackType(Warrior warrior)
         {
             AttackType attackType = AttackType.NoAttack;
@@ -152,69 +154,96 @@ namespace GridWarModel.Logic
                 Position attackPosition = board.GetPositionInADirection(warriorPosition, firstDirection, secondDirection);
                 Warrior opponent = findWarriorAtARoom(attackPosition.X, attackPosition.Y);
 
-                if (attackType == AttackType.MeleeAttack)
-                {
-                    // Make sure for a MeleeAttack boundary room was selected
-                    if (secondDirection != Direction.INVALID_DIRECTION)
-                        return false;
-
-                    double meleeDamage = opponent.MeleePower - (opponent.DefensePercentage * opponent.MeleePower);
-                    opponent.HitPoints -= meleeDamage;
-
-                    return true;
-                } else if (attackType == AttackType.MagicAttack)
-                {
-                    double magicDamage = opponent.MagicPower - (opponent.DefensePercentage * opponent.MagicPower);
-                    opponent.HitPoints -= magicDamage;
-
-                    return true;
-                }                
-
-                // After attack power of attacking warrior
+                // After a attack, update power of attacking warrior
                 if (warrior is MeleeWarrior)
-                {
-                    double meleePower = warrior.MeleePower + 0.5;
-                    warrior.MeleePower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
-                    double magicPower = warrior.MagicPower + 0.125;
-                    warrior.MagicPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER;
-                } else if (warrior is MagicWarrior)
-                {
-                    double meleePower = warrior.MeleePower + 0.125;
-                    warrior.MeleePower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
-                    double magicPower = warrior.MagicPower + 0.5;
-                    warrior.MagicPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER;
+                {                    
+                    warrior.MeleePower = GetAddedPowerWithinRange(warrior, 0.5, PowerType.MELEE_POWER);                    
+                    warrior.MagicPower = GetAddedPowerWithinRange(warrior, 0.125, PowerType.MAGIC_POWER);
+                }
+                else if (warrior is MagicWarrior)
+                {                    
+                    warrior.MeleePower = GetAddedPowerWithinRange(warrior, 0.125, PowerType.MELEE_POWER);                    
+                    warrior.MagicPower = GetAddedPowerWithinRange(warrior, 0.5, PowerType.MAGIC_POWER);
                 }
 
-                // After being attacked opponents power change
-                double defencePercentage = opponent.DefensePercentage + 0.25;
-                opponent.DefensePercentage = defencePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defencePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
-
-                // Opponent vanquishing
-                if (opponent.HitPoints <= 0)
+                // Reduce opponent's power or kill it, only if there is an opponent at the attack position
+                if (opponent != null)
                 {
-                    double defensePercentage = warrior.DefensePercentage + 1;
-                    warrior.DefensePercentage = defensePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defensePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
-                    if (warrior is MeleeWarrior)
+                    if (attackType == AttackType.MeleeAttack)
                     {
-                        double meleePower = warrior.MeleePower + 1;
-                        warrior.MeleePower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
-                        double magicPower = warrior.MagicPower + 0.25;
-                        warrior.MagicPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER;
+                        // Make sure for a MeleeAttack boundary room was selected
+                        if (secondDirection != Direction.INVALID_DIRECTION)
+                            return false;
+
+                        double meleeDamage = opponent.MeleePower - (opponent.DefensePercentage * opponent.MeleePower);
+                        opponent.HitPoints -= meleeDamage;
+
                     }
-                    else if (warrior is MagicWarrior)
+                    else if (attackType == AttackType.MagicAttack)
                     {
-                        double meleePower = warrior.MeleePower + 0.25;
-                        warrior.MeleePower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
-                        double magicPower = warrior.MagicPower + 1;
-                        warrior.MagicPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER;
+                        double magicDamage = opponent.MagicPower - (opponent.DefensePercentage * opponent.MagicPower);
+                        opponent.HitPoints -= magicDamage;
                     }
 
-                    // remove the warrior from the list
-                    deleteWarrior(warrior);
+                    // After being attacked opponents power change
+                    opponent.DefensePercentage = GetAddedPowerWithinRange(opponent, 0.25, PowerType.DEFENCE_PERCENTAGE);
+
+                    // Opponent vanquishing
+                    if (opponent.HitPoints <= 0)
+                    {
+                        killAnOpponent(warrior, opponent);
+                    }
+
+                    return true;
                 }
             }          
 
             return false;   
+        }
+
+        public double GetAddedPowerWithinRange(Warrior warrior, double delta, PowerType powerType)
+        {
+            double addedPower = 0;
+
+            if (powerType == PowerType.MELEE_POWER)
+            {
+                double meleePower = warrior.MeleePower + delta;
+                addedPower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
+            } else if (powerType == PowerType.MAGIC_POWER)
+            {
+                double magicPower = warrior.MagicPower + delta;
+                addedPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER; 
+            } else if (powerType == PowerType.DEFENCE_PERCENTAGE)
+            {
+                double defencePercentage = warrior.DefensePercentage + delta;
+                addedPower = defencePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defencePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
+            }
+
+            return addedPower;
+        }
+
+        // Kill an opponent and update warrior's power
+        private void killAnOpponent(Warrior warrior, Warrior opponent)
+        {
+            double defensePercentage = warrior.DefensePercentage + 1;
+            warrior.DefensePercentage = defensePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defensePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
+            if (warrior is MeleeWarrior)
+            {
+                double meleePower = warrior.MeleePower + 1;
+                warrior.MeleePower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
+                double magicPower = warrior.MagicPower + 0.25;
+                warrior.MagicPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER;
+            }
+            else if (warrior is MagicWarrior)
+            {
+                double meleePower = warrior.MeleePower + 0.25;
+                warrior.MeleePower = meleePower <= Warrior.MAX_MELEE_POWER ? meleePower : Warrior.MAX_MELEE_POWER;
+                double magicPower = warrior.MagicPower + 1;
+                warrior.MagicPower = magicPower <= Warrior.MAX_MAGIC_POWER ? magicPower : Warrior.MAX_MAGIC_POWER;
+            }
+
+            // remove the opponent from the list
+            deleteWarrior(opponent);
         }
 
         public void MoveWarrior(Warrior warrior, Direction direction)
@@ -233,12 +262,18 @@ namespace GridWarModel.Logic
                     warrior.Position.X += deltaX;
                     warrior.Position.Y += deltaY;
                     board.ROOMS[warrior.Position.X, warrior.Position.Y] = 1;
-
-                    // After a warrior moves defence power increases
-                    double defencePercentage = warrior.DefensePercentage + 0.125;
-                    warrior.DefensePercentage = defencePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defencePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
+					
+					// After a warrior moves increase defencePercentage
+                    increaseDefencePercentage(warrior);
                 }
             }
         }
+		
+		// Increase defence percentage after a warrior moves
+		private void increaseDefencePercentage(Warrior warrior)
+		{			
+			double defencePercentage = warrior.DefensePercentage + 0.125;
+			warrior.DefensePercentage = defencePercentage <= Warrior.MAX_DEFENSE_PERCENTAGE ? defencePercentage : Warrior.MAX_DEFENSE_PERCENTAGE;
+		}
     }
 }

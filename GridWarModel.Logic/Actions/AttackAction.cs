@@ -30,7 +30,7 @@ namespace GridWarModel.Logic
 
         private void attack()
         {
-            Console.WriteLine("\nWarrior " + this.warrior.Id + " is attacking in " + Status.ActionDirection.ToString());
+            // Attack Action
         }
 
         public bool isDone()

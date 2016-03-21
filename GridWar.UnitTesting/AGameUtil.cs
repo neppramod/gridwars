@@ -25,7 +25,7 @@ namespace GridWar.UnitTesting
 
             // Should not create a warrior for any other character
             sut = gameUtil.createWarrior('A');
-            Assert.That(sut, Is.Null);
+            Assert.That(sut, Is.EqualTo(null));
         }
 
         [Test]
@@ -113,8 +113,7 @@ namespace GridWar.UnitTesting
         {
             Board board = new Board();
             var sut = new GameUtil(board);
-
-            // Create a Fake
+                        
             var warrior = new MeleeWarrior();
             warrior.Position = new Position { X = 2, Y = 2 };            
 
@@ -126,22 +125,160 @@ namespace GridWar.UnitTesting
             Assert.That(warrior.Position.X, Is.EqualTo(positionXpre -1));
             Assert.That(warrior.Position.Y, Is.EqualTo(positionYpre + 1));
         }
+
+        [Test]
+        public void ShouldIncreaseDefencePercentageOfAWarriorAfterAMovement()
+        {
+            Board board = new Board();
+            var sut = new GameUtil(board);
+            var warrior = new MagicWarrior();
+            warrior.Position = new Position { X = 2, Y = 2 };
+
+            double defencePercentagePre = warrior.DefensePercentage;
+            sut.MoveWarrior(warrior, Direction.EAST);
+            Assert.That(warrior.DefensePercentage, Is.EqualTo(defencePercentagePre + 0.125));
+        }
+
+        [Test]
+        public void ShouldNotIncreaseDefencePercentageAboveHunderedAfterAMovement()
+        {
+            Board board = new Board();
+            var sut = new GameUtil(board);
+            var warrior = new MagicWarrior();
+            warrior.Position = new Position { X = 2, Y = 2 };
+            warrior.DefensePercentage = 99.99;
+
+            double defencePercentagePre = warrior.DefensePercentage;
+            sut.MoveWarrior(warrior, Direction.EAST);
+            Assert.That(warrior.DefensePercentage, Is.EqualTo(Warrior.MAX_DEFENSE_PERCENTAGE));
+        }
 		
 		[Test]
         public void APositionShouldBeOccupiedAfterAWarriorIsMovedThere()
         {
-            var sut = new Board();
+            var board = new Board();
             var warrior = new MeleeWarrior();
-			var gameUtil = new GameUtil(sut);
+			var sut = new GameUtil(board);
 			
             warrior.Position = new Position { X = 2, Y = 2 };
 
             var positionXpre = warrior.Position.X;
             var positionYpre = warrior.Position.Y;
                         
-            gameUtil.MoveWarrior(warrior, Direction.EAST_NORTH);
+            sut.MoveWarrior(warrior, Direction.EAST_NORTH);
 
-            Assert.That(sut.IsPositionOccupied(new Position { X = positionXpre - 1, Y = positionYpre + 1 }), Is.EqualTo(true));            
+            Assert.That(board.IsPositionOccupied(new Position { X = positionXpre - 1, Y = positionYpre + 1 }), Is.EqualTo(true));            
+        }
+
+        [Test]
+        public void AMagicWarriorShouldBeAbleToMagicAttackAWarriorTwoPlacesAway()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            var attackingWarrior = new MagicWarrior();
+            attackingWarrior.Position = new Position { X = 2, Y = 2 };
+            var opponentWarrior = new MeleeWarrior();
+            opponentWarrior.Position = new Position { X = 3, Y = 4 };
+
+            sut.addWarrior(attackingWarrior);
+            sut.addWarrior(opponentWarrior);
+
+            Assert.That(sut.WarriorAttack(attackingWarrior, AttackType.MagicAttack, Direction.EAST, Direction.EAST_SOUTH), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void AMeleeWarriorShouldBeAbleToMagicAttackAWarriorTwoPlacesAway()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            var attackingWarrior = new MeleeWarrior();
+            attackingWarrior.Position = new Position { X = 2, Y = 2 };
+            var opponentWarrior = new MeleeWarrior();
+            opponentWarrior.Position = new Position { X = 3, Y = 4 };
+
+            sut.addWarrior(attackingWarrior);
+            sut.addWarrior(opponentWarrior);
+
+            Assert.That(sut.WarriorAttack(attackingWarrior, AttackType.MagicAttack, Direction.EAST, Direction.EAST_SOUTH), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void AWarriorShouldNotBeAbleToAttackOutsideTheBoard()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            var attackingWarrior = new MeleeWarrior();
+            attackingWarrior.Position = new Position { X = 3, Y = 4 };
+            
+
+            sut.addWarrior(attackingWarrior);
+            
+
+            Assert.That(sut.WarriorAttack(attackingWarrior, AttackType.MagicAttack, Direction.EAST, Direction.EAST_SOUTH), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void AWarriorShouldNotAttackIfOpponentDoesNotExistAtAPosition()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            var attackingWarrior = new MeleeWarrior();
+            attackingWarrior.Position = new Position { X = 2, Y = 2 };
+            var opponentWarrior = new MeleeWarrior();
+            opponentWarrior.Position = new Position { X = 3, Y = 4 };
+
+            sut.addWarrior(attackingWarrior);
+            sut.addWarrior(opponentWarrior);
+
+            Assert.That(sut.WarriorAttack(attackingWarrior, AttackType.MagicAttack, Direction.EAST, Direction.EAST_NORTH), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void AWarriorShouldBeAbleToAttackAnOpponent()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            Warrior warrior = new MeleeWarrior();
+            warrior.Position = new Position { X = 2, Y = 2 };
+
+            var opponent = new MeleeWarrior();
+            opponent.Position = new Position { X = 2, Y = 3 };
+
+            sut.addWarrior(warrior);
+            sut.addWarrior(opponent);
+
+            sut.WarriorAttack(warrior, AttackType.MeleeAttack, Direction.EAST);
+            Assert.That(sut.findWarriorAtARoom(2, 3), Is.Not.EqualTo(null));
+        }
+
+        [Test]
+        public void AWarriorShouldBeAbleToKillAnOpponent()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            Warrior warrior = new MeleeWarrior();
+            warrior.Position = new Position { X = 2, Y = 2 };
+
+            var opponent = new MeleeWarrior();
+            opponent.Position = new Position { X = 2, Y = 3 };
+            opponent.HitPoints = 0.001;
+
+            sut.addWarrior(warrior);
+            sut.addWarrior(opponent);
+
+            sut.WarriorAttack(warrior, AttackType.MeleeAttack, Direction.EAST);
+            Assert.That(sut.findWarriorAtARoom(2, 3), Is.EqualTo(null));
+        }
+
+        [Test]
+        public void ShouldGetAddedPowerWithinRange()
+        {
+            var board = new Board();
+            var sut = new GameUtil(board);
+            Warrior warrior = new MeleeWarrior();
+
+            var powerPre = warrior.MeleePower;
+            Assert.That(sut.GetAddedPowerWithinRange(warrior, 0.5, PowerType.MELEE_POWER), Is.EqualTo(powerPre + 0.5));
         }
     }
 }
